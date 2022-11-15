@@ -6,14 +6,14 @@
       shell: |
         cd /tmp
         rm -rf iac-infra
-        git clone https://mberthos:<token>@github.com/mberthos/hotmart-idp.git
+        git clone https://mberthos:@github.com/mberthos/hotmart-idp.git
 #Metrics
 - name: Setup metrics kubernetes
   hosts: all
   tasks:
     - name: Setup metrics kubernetes
       shell: |
-        aws eks update-kubeconfig --region us-west-2 --name mberthos --profile mberthos
+        aws eks update-kubeconfig --region us-west-2 --name cluster-hotmart
         cd /tmp/iac-infra/argocd-install/mberthos/pos-setup/k8s/metrics/
         kubectl apply -f eks-metrics.yaml
       register: k8sMetrics
@@ -24,7 +24,7 @@
   hosts: all
   tasks:
     - name: Conditional if exists
-      shell: aws eks describe-cluster --name mberthos --query "cluster.identity.oidc.issuer" --output text --profile mberthos-terraform --region us-west-2 | wc -l
+      shell: aws eks describe-cluster --name cluster-hotmart --query "cluster.identity.oidc.issuer" --output text --region us-west-2 | wc -l
       register: iamoidc
     - name: Conditional if exists
       shell: "aws iam list-policies --profile mberthos-terraform --region us-west-2 | grep AmazonEKSClusterCaixaAutoscalerPolicyAll | wc -l"
@@ -34,21 +34,21 @@
       register: iamserviceaccount
     - name: Setup aws associate-iam-oidc-provide
       shell: |
-        aws eks update-kubeconfig --region us-west-2 --name mberthos --profile mberthos      
+        aws eks update-kubeconfig --region us-west-2 --name mberthos 
         cd /tmp/iac-infra/argocd-install/mberthos/pos-setup/extras/auto-scaller/
-        eksctl utils associate-iam-oidc-provider --cluster mberthos --approve --profile mberthos-terraform --region us-west-2 -y #check if exists before
+        eksctl utils associate-iam-oidc-provider --cluster mberthos --approve --region us-west-2 -y #check if exists before
       when: iamoidc.stdout == "1"
     - name: Setup aws create-policy
       shell: |
-        aws eks update-kubeconfig --region us-west-2 --name mberthos --profile mberthos      
+        aws eks update-kubeconfig --region us-west-2 --name cluster-hotmart      
         cd /tmp/iac-infra/argocd-install/mberthos/pos-setup/extras/auto-scaller/        
         aws iam create-policy --policy-name AmazonEKSClusterCaixaAutoscalerPolicyAll --policy-document file://cluster-autoscaler-policy_all.json --profile mberthos-terraform --region us-west-2 #check if exists before #check if exists before
       when: createpolicy.stdout == "0"
     - name: Setup cluster autoscaller kubernetes
       shell: |
-        aws eks update-kubeconfig --region us-west-2 --name mberthos --profile mberthos      
+        aws eks update-kubeconfig --region us-west-2 --name cluster-hotmart
         cd /tmp/iac-infra/argocd-install/mberthos/pos-setup/extras/auto-scaller/
-        eksctl create iamserviceaccount --name cluster-autoscaler --namespace kube-system --cluster mberthos --attach-policy-arn \"arn:aws:iam::277173910066:policy/AmazonEKSClusterCaixaAutoscalerPolicyAll\" --approve --override-existing-serviceaccounts --profile mberthos-terraform --region us-west-2 #check if exists before
+        eksctl create iamserviceaccount --name cluster-autoscaler --namespace kube-system --cluster cluster-hotmart --attach-policy-arn \"arn:aws:iam::277173910066:policy/AmazonEKSClusterCaixaAutoscalerPolicyAll\" --approve --override-existing-serviceaccounts --region us-west-2 #check if exists before
         kubectl apply -f cluster-autoscaler-autodiscover.yaml        
         kubectl apply -f pdb.yaml
       when: iamserviceaccount.stdout == "0"
@@ -58,7 +58,7 @@
   tasks:
     - name: Setup Namespaces
       shell: |
-        aws eks update-kubeconfig --region us-west-2 --name mberthos --profile mberthos
+        aws eks update-kubeconfig --region us-west-2 --name cluster-hotmart
         cd /tmp/iac-infra/argocd-install/mberthos/pos-setup/k8s/base/
         kubectl apply -f namespaces.yml
       register: k8sNS
@@ -77,7 +77,7 @@
       register: contents
     - name: Helm install
       shell: |
-        aws eks update-kubeconfig --region us-west-2 --name mberthos --profile mberthos
+        aws eks update-kubeconfig --region us-west-2 --name cluster-hotmart
         helm repo add external-secrets https://charts.external-secrets.io
         helm repo update
         helm install external-secrets external-secrets2/external-secrets -n external-secrets --create-namespace
