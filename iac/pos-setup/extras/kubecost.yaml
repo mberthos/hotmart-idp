@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kubecost
+  namespace: argocd
+spec:
+  destination:
+    name: mberthos
+    namespace: kubecost
+    #server: 'https://7A0A2913B034E3E506C7C72C80CC60CD.gr7.us-west-2.eks.amazonaws.com'
+  source:
+    path: ''
+    repoURL: 'https://kubecost.github.io/cost-analyzer/'
+    targetRevision: 1.94.3
+    helm:
+      parameters:
+        - name: kubecostToken
+          value: bWFyY2Vsby5iZXJ0aG9AbWludS5jbw==xm343yadf98
+    chart: cost-analyzer
+  project: infra-dev

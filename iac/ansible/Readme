@@ -1,0 +1,4 @@
+ansible-galaxy collection install kubernetes.core
+
+- To Run
+sudo ansible-playbook -i /etc/ansible/hosts playbook-base.yml -v

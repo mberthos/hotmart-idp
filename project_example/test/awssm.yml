@@ -1,0 +1,69 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: ocs2-api-secrets
+  namespace: poc-es
+spec:
+  refreshInterval: 30m # rate SecretManager pulls GCPSM
+  secretStoreRef:
+    name: secretstore-awsdev # name of the SecretStore (or kind specified)
+    kind: SecretStore
+  target:
+    name: ocs2-api-secrets # name of the k8s Secret to be created
+    creationPolicy: Owner
+  data:
+    - secretKey: ocs2-api-secrets  # name of the GCPSM secret key
+      remoteRef:
+        key: ocs2-api-secrets
+        #version: latest # version of the GCP secret
+        #property: provider-key-property
+  #dataFrom:
+  #  - extract:
+  #      key: remote-key-in-the-provider
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: ocs2-rating-secrets
+  namespace: poc-es
+spec:
+  refreshInterval: 30m # rate SecretManager pulls GCPSM
+  secretStoreRef:
+    name: secretstore-awsdev # name of the SecretStore (or kind specified)
+    kind: SecretStore
+  target:
+    name: ocs2-rating-secrets # name of the k8s Secret to be created
+    creationPolicy: Owner
+  data:
+    - secretKey: ocs2-rating-secrets  # name of the GCPSM secret key
+      remoteRef:
+        key: ocs2-rating-secrets
+        #version: latest # version of the GCP secret
+        #property: provider-key-property
+  #dataFrom:
+  #  - extract:
+  #      key: remote-key-in-the-provider
+
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: ocs-billing2-secrets
+  namespace: poc-es
+spec:
+  refreshInterval: 30m # rate SecretManager pulls GCPSM
+  secretStoreRef:
+    name: secretstore-awsdev # name of the SecretStore (or kind specified)
+    kind: SecretStore
+  target:
+    name: ocs-billing2-secrets # name of the k8s Secret to be created
+    creationPolicy: Owner
+  data:
+    - secretKey: ocs-billing2-secrets  # name of the GCPSM secret key
+      remoteRef:
+        key: ocs-billing2-secrets
+        #version: latest # version of the GCP secret
+        #property: provider-key-property
+  #dataFrom:
+  #  - extract:
+  #      key: remote-key-in-the-provider

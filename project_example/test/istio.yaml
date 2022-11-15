@@ -1,0 +1,69 @@
+###########################################################################
+# Ingress resource (gateway)
+##########################################################################
+#apiVersion: networking.istio.io/v1alpha3
+#kind: Gateway
+#metadata:
+#  name: gateway-helloworld2
+#  namespace: poc-es
+#spec:
+#  selector:
+#    istio: ingressgateway # use istio default controller
+#    servers:
+#      - port:
+#          number: 80
+#          name: http
+#          protocol: HTTP
+#        hosts:
+#          - "helloworld-istio.petlove.com.br"
+#---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: dr-helloworld2
+  namespace: poc-es
+spec:
+  host: service-helloworld2
+  subsets:
+    - name: aguia2
+      labels:
+        version: aguia2
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vs-helloworld2
+  namespace: poc-es
+spec:
+  hosts:
+    - "helloworld-istio.petlove.com.br"
+  gateways:
+    - public-gateway
+  http:
+    #- name: "helloworld2-vpn-allow"
+    #  match:
+    #    - uri:
+    #        prefix: /
+    #  route:
+    #    - destination:
+    #        host: service-helloworld2
+    #        subset: gaviao2
+    #  timeout: 900s
+
+    - name: "helloworld2-ping"
+      match:
+        - uri:
+            prefix: "/ping"
+        - uri:
+            prefix: "/uuid"
+      route:
+        - destination:
+            host: service-helloworld2
+            subset: aguia2
+
+    - name: "helloworld2-normal"
+      route:
+        - destination:
+            host: service-helloworld2
+            subset: aguia2

@@ -1,0 +1,53 @@
+--------------------
+1)List current config awd node groups
+aws autoscaling \
+    describe-auto-scaling-groups \
+    --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='<NOME_CLUSTER>']].[AutoScalingGroupName, MinSize, MaxSize,DesiredCapacity]" \
+    --output table --profile <NOME_PROFILE>
+
+2) Create Tags no nodegroup
+k8s.io/cluster-autoscaler/<NOME_CLUSTER> - owned
+k8s.io/cluster-autoscaler/enabled -	true
+
+3) Configuring AWS to autoscalling(EKS)
+aws eks describe-cluster --name <NOME_CLUSTER> --query "cluster.identity.oidc.issuer" --output text --profile <NOME_PROFILE>
+aws iam list-open-id-connect-providers --profile <NOME_PROFILE>
+eksctl utils associate-iam-oidc-provider --cluster <NOME_CLUSTER> --approve --profile <NOME_PROFILE>
+
+
+aws iam create-policy \
+    --policy-name AmazonEKSClusterCaixaAutoscalerPolicyAll \
+    --policy-document file://cluster-autoscaler-policy_all.json --profile dev
+
+eksctl create iamserviceaccount \
+    --name cluster-autoscaler \
+    --namespace kube-system \
+    --cluster <NOME_CLUSTER> \
+    --attach-policy-arn "arn:aws:iam::<ID_CONTA_AWS>:policy/AmazonEKSClusterCaixaAutoscalerPolicyAll" \
+    --approve \
+    --override-existing-serviceaccounts --profile <NOME_PROFILE>
+
+kubectl -n kube-system describe sa cluster-autoscaler
+
+5) Run:
+ALTERAR NO FILE ABAIXO O NOME DO CLUSTER
+kubectl apply -f cluster-autoscaler-autodiscover.yaml
+
+6)Run:
+kubectl patch deployment cluster-autoscaler \
+  -n kube-system \
+  -p '{"spec":{"template":{"metadata":{"annotations":{"cluster-autoscaler.kubernetes.io/safe-to-evict": "false"}}}}}'
+
+
+7) Run:
+(https://github.com/kubernetes/autoscaler/releases) para achar a versao correta correspondente ao cluster.
+kubectl set image deployment cluster-autoscaler \
+  -n kube-system \
+  cluster-autoscaler=k8s.gcr.io/autoscaling/cluster-autoscaler:v1.21.3
+
+kubectl -n kube-system logs -f deployment.apps/cluster-autoscaler
+
+8) Create a PDB before reconfigure nodes number(min-max)
+kubectl apply -f cluster-autoscaler-pdb.yaml
+
+9) Changing the desired number for node group.

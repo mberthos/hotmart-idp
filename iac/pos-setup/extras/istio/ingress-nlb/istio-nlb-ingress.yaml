@@ -1,0 +1,19 @@
+#istioctl apply -f istio-nlb-ingress.yaml --set meshConfig.accessLogFile=/dev/stdout --set meshConfig.enableTracing=true --set meshConfig.defaultConfig.tracing.sampling=10 --set meshConfig.defaultConfig.tracing.custom_tags.my_tag_header.header.name=host
+
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+  name: istiogw-nlb-wise-co
+spec:
+  components:
+    ingressGateways:
+      - name: istiogw-nlb-wise-co
+        label:
+          istio: istiogw-nlb-wise-co
+          app: istiogw-nlb-wise-co
+        namespace: istio-system
+        enabled: true
+        k8s:
+          serviceAnnotations:
+            service.beta.kubernetes.io/aws-load-balancer-type: "nlb"            

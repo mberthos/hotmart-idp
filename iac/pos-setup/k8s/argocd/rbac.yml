@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sandbox-rbac
+  namespace: argocd
+spec:
+  destination:
+    name: 'in-cluster'
+    namespace: default
+    #server: 'https://7A0A2913B034E3E506C7C72C80CC60CD.gr7.us-west-2.eks.amazonaws.com'
+  source:
+    path: ./argocd-install/mberthos/pos-setup/k8s/rbac
+    repoURL: 'git@github.com:mberthos/hotmart-idp'
+    targetRevision: HEAD
+    directory:
+      recurse: true
+  project: infra-dev

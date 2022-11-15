@@ -1,0 +1,28 @@
+redis-ha:
+  enabled: true
+
+controller:
+  enableStatefulSet: true
+
+server:
+  replicas: 1
+  env:
+    - name: ARGOCD_API_SERVER_REPLICAS
+      value: '3'
+  extraArgs:
+    - --insecure
+  config:
+    url: "https://argocd.wisemonkeys.co"
+    #dex.config: |
+    #  connectors:
+    #  - type: github
+    #    id: github
+    #    name: GitHub
+    #    config:
+    #      clientID: $argocd-github-sso-secret:github.clientID
+    #      clientSecret: $argocd-github-sso-secret:github.clientSecret
+    #      teamNameField: both
+    #          orgs:
+    #        - name: mberthos
+repoServer:
+  replicas: 1

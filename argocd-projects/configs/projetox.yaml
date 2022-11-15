@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: projetox-dev
+  namespace: argocd
+spec:
+  destination:
+    name: on-site
+    namespace: mberthos
+  project: default
+  source:
+    path: ./projetox/
+    repoURL: git@github.com:mberthos/k8s-manifests.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+    - CreateNamespace=true
