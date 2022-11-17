@@ -1,0 +1,24 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-deployment-aguia
+  namespace: istio-poc
+  labels:
+    app: helloworld
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helloworld
+  template:
+    metadata:
+      labels:
+        version: aguia
+        app: helloworld
+    spec:
+      containers:
+        - name: helloworld
+          image: testcontainers/helloworld
+          ports:
+            - containerPort: 8080
