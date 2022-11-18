@@ -56,6 +56,7 @@ sudo systemctl enable docker
 sudo systemctl restart docker
 sudo usermod -aG docker jenkins
 newgrp docker
+echo "jenkins ALL=(ALL:ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/jenkins
 
 Create job 
 

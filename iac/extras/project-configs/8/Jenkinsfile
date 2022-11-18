@@ -1,52 +1,39 @@
 pipeline {
-    agent {
-       label "mestre"
+    agent any
+    options {
+        skipStagesAfterUnstable()
     }
-
     stages {
-        stage('Git Clone') {
-           steps {
-              echo "Running in mestre"
-              sh "git clone https://mberthos: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@github.com/mberthos/hotmart-idp.git"
-           }
+         stage('Clone repository') {
+            steps {
+                script{
+                  checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[credentialsId:  'github-hotmart', url: 'https://github.com/mberthos/hotmart-idp.git']]])
+                }
+            }
+         }
+         stage('Build') {
+            steps {
+                script{
+                 sh "pwd && id"
+                 //app = docker.build("underwater", "-f project_example/Dockerfile .")
+                 sh "sudo docker build -t ecr-teste-crossplane -f project_example/Dockerfile ."
+                }
+            }
+        }
+        stage('Test'){
+            steps {
+                 echo 'Empty'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script{
+                    sh "sudo docker tag ecr-teste-crossplane:latest 993045863210.dkr.ecr.us-west-2.amazonaws.com/ecr-teste-crossplane:latest"
+                    sh "sudo docker push 993045863210.dkr.ecr.us-west-2.amazonaws.com/ecr-teste-crossplane:latest"
+
+                }
+            }
         }
 
-        stage ("Docker build") {
-           agent{
-             dockerfile {
-                dir 'Dockerfiles'
-                label "mestre"
-             }
-            }
-            steps{
-                sh "hostname"
-            }
-        }
     }
 }
-
-//
-
-        /*stage ('Build and push image') {
-            steps {
-                script {
-                    sudo docker build --build-arg NPM_TOKEN=${NPM_TOKEN} -t ${ECR}:${BUILD_NUMBER}-candidate .
-                    sudo docker push ${ECR}:${BUILD_NUMBER}-candidate
-                }
-            }
-        }
-
-        stage('Deployng Kubernetes') {
-            steps {
-                script {
-                   gcloud container clusters get-credentials cluster-sites-prod-3 --zone us-central1-c --project kenlo-project
-                   kubectl apply -f sites-webapp-final.yaml
-                   #kubectl apply -f sites-webapp2_final.yaml
-                   kubectl apply -f services.yaml
-                   kubectl apply -f gateway-istio.yaml
-                   kubectl apply -f virtual_service-istio.yaml
-                   kubectl apply -f destination_rule-istio.yaml
-                }
-            }
-        } */
-
