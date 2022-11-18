@@ -5,8 +5,7 @@ LABEL maintainer="mberthos"
 COPY . /opt/application
 WORKDIR /opt/application
 
-RUN export NODE_ENV=production \
-  && npm ci --production 
+RUN npm ci --production
 
 RUN chown node /opt/application
 USER node
