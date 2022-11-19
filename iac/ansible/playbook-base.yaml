@@ -34,21 +34,21 @@
       register: iamserviceaccount
     - name: Setup aws associate-iam-oidc-provide
       shell: |
-        aws eks update-kubeconfig --region us-west-2 --name mberthos 
+        aws eks update-kubeconfig --region us-west-2 --name cluster-hotmart
         cd /tmp/iac-infra/argocd-install/mberthos/pos-setup/extras/auto-scaller/
-        eksctl utils associate-iam-oidc-provider --cluster mberthos --approve --region us-west-2 -y #check if exists before
+        eksctl utils associate-iam-oidc-provider --cluster cluster-hotmart --approve --region us-west-2 #check if exists before
       when: iamoidc.stdout == "1"
     - name: Setup aws create-policy
       shell: |
         aws eks update-kubeconfig --region us-west-2 --name cluster-hotmart      
         cd /tmp/iac-infra/argocd-install/mberthos/pos-setup/extras/auto-scaller/        
-        aws iam create-policy --policy-name AmazonEKSClusterCaixaAutoscalerPolicyAll --policy-document file://cluster-autoscaler-policy_all.json --profile mberthos-terraform --region us-west-2 #check if exists before #check if exists before
+        aws iam create-policy --policy-name AmazonEKSClusterCaixaAutoscalerPolicyAll --policy-document file://cluster-autoscaler-policy_all.json --region us-west-2 #check if exists before #check if exists before
       when: createpolicy.stdout == "0"
     - name: Setup cluster autoscaller kubernetes
       shell: |
         aws eks update-kubeconfig --region us-west-2 --name cluster-hotmart
         cd /tmp/iac-infra/argocd-install/mberthos/pos-setup/extras/auto-scaller/
-        eksctl create iamserviceaccount --name cluster-autoscaler --namespace kube-system --cluster cluster-hotmart --attach-policy-arn \"arn:aws:iam::277173910066:policy/AmazonEKSClusterCaixaAutoscalerPolicyAll\" --approve --override-existing-serviceaccounts --region us-west-2 #check if exists before
+        eksctl create iamserviceaccount --name cluster-autoscaler --namespace kube-system --cluster cluster-hotmart --attach-policy-arn \"arn:aws:iam::339524065461:policy/AmazonEKSClusterCaixaAutoscalerPolicyAll\" --approve --override-existing-serviceaccounts --region us-west-2 #check if exists before
         kubectl apply -f cluster-autoscaler-autodiscover.yaml        
         kubectl apply -f pdb.yaml
       when: iamserviceaccount.stdout == "0"
