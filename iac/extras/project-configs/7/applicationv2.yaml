@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: helloworld-deployment-gaviao
-  namespace: istio-poc
+  namespace: default
   labels:
     app: helloworld
 spec:

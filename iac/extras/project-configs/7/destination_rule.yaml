@@ -3,7 +3,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: dr-helloworld
-  namespace: istio-poc
+  namespace: default
 spec:
   host: service-helloworld
   subsets:

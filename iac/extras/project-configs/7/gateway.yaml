@@ -4,8 +4,8 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: gateway-helloworld
-  namespace: istio-poc
+  name: public-gateway
+  namespace: default
 spec:
   selector:
     istio: ingressgateway # use istio default controller
@@ -15,4 +15,4 @@ spec:
         name: http
         protocol: HTTP
       hosts:
-      - "helloworld.carbon0-dev.cloud"
+      - "*.meudomain.com.br"
