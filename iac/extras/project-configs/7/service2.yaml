@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-helloworld
+  namespace: istio-poc
+  labels:
+    app: helloworld
+    service: service-helloworld
+spec:
+  selector:
+    app: helloworld
+  ports:
+    - port: 8080
+      name: http
+
+
+
+

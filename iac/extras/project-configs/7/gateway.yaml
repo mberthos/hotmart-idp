@@ -1,0 +1,18 @@
+###########################################################################
+# Ingress resource (gateway)
+##########################################################################
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: gateway-helloworld
+  namespace: istio-poc
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+      - "helloworld.carbon0-dev.cloud"

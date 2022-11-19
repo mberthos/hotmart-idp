@@ -1,0 +1,16 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: dr-helloworld
+  namespace: istio-poc
+spec:
+  host: service-helloworld
+  subsets:
+  - name: aguia
+    labels:
+      version: aguia
+  - name: gaviao
+    labels:
+      version: gaviao
+

@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+    options {
+        skipStagesAfterUnstable()
+    }
+    stages {
+         stage('Clone repository') {
+            steps {
+                script{
+                  checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[credentialsId:  'github-hotmart', url: 'https://github.com/mberthos/hotmart-idp.git']]])
+                }
+            }
+         }
+         stage('Build') {
+            steps {
+                script{
+                 sh "pwd && id"
+                 //app = docker.build("underwater", "-f project_example/Dockerfile .")
+                 sh "sudo docker build -t ecr-teste-crossplane -f project_example/Dockerfile ."
+                }
+            }
+        }
+        stage('Test'){
+            steps {
+                 echo 'Empty'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script{
+                    sh "sudo docker tag ecr-teste-crossplane:latest 993045863210.dkr.ecr.us-west-2.amazonaws.com/ecr-teste-crossplane:latest"
+                    sh "sudo docker push 993045863210.dkr.ecr.us-west-2.amazonaws.com/ecr-teste-crossplane:latest"
+
+                }
+            }
+        }
+
+    }
+}

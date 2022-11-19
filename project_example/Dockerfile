@@ -1,15 +1,12 @@
-#Ver versão do alpine ou mudar para outro cara.
-FROM node:14.17.5
-LABEL maintainer="mberthos"
-
-COPY . /opt/application
-WORKDIR /opt/application
-
-RUN export NODE_ENV=production \
-  && npm ci --production 
-
-RUN chown node /opt/application
-USER node
-
-ENTRYPOINT ["./entrypoint.sh"]
-CMD ["start"]
+# define a imagem base
+FROM debian:latest
+# define o mantenedor da imagem
+LABEL maintainer="curso-hotmart"
+# Atualiza a imagem com os pacotes
+RUN apt-get update && apt-get upgrade -y
+# Instala o NGINX para testar
+RUN apt-get install nginx -y
+# Expoe a porta 80
+EXPOSE 80
+# Comando para iniciar o NGINX no Container
+CMD ["nginx", "-g", "daemon off;"]

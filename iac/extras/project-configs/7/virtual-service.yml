@@ -1,0 +1,34 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vs-helloworld
+  namespace: istio-poc
+spec:
+  hosts:
+  - "helloworld.carbon0-dev.cloud"
+  gateways:
+  - gateway-helloworld
+  http:
+    - route:
+      - destination:
+           host: service-helloworld
+           subset: aguia
+        weight: 80
+      - destination:
+          host: service-helloworld
+          subset: gaviao
+        weight: 20
+      corsPolicy:
+        allowOrigins:
+          - exact: "*"
+        allowMethods:
+          - GET
+          - POST
+          - PATCH
+          - PUT
+          - DELETE
+          - OPTIONS
+        allowCredentials: false
+        allowHeaders:
+          - "*"
