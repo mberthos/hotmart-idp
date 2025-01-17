@@ -24,8 +24,9 @@ jobs:
       # Atualizar o manifesto com a nova versão da imagem
       - name: Atualizar versão da imagem no manifesto
         run: |
+          cd project_example
           export IMAGE_VERSION="${{ github.event.inputs.image_version }}"
-          yq e '.spec.template.spec.containers[0].image = "767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:" + env(IMAGE_VERSION)' -i deployment.yaml
+          yq e '.spec.template.spec.containers[0].image = "767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:" + env(IMAGE_VERSION)' -i manifest-kubernetes.yaml
 
       # Verificar as alterações realizadas
       - name: Verificar alterações no manifesto
