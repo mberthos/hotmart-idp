@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: project-example
-          image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.2
+          image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.5
           ports:
             - containerPort: 80
           envFrom:
@@ -39,7 +39,10 @@ spec:
     - port: 80
       name: http
       targetPort: 80
-
+  template:
+    spec:
+      containers:
+        - image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.5
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
@@ -55,10 +58,19 @@ spec:
     name: project-example # name of the k8s Secret to be created
     creationPolicy: Owner
   data:
-    - secretKey: project-example  # name of the GCPSM secret key
+    - secretKey: project-example # name of the GCPSM secret key
       remoteRef:
         key: project-example
+  template:
+    spec:
+      containers:
+        - image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.5
 ---
+spec:
+  template:
+    spec:
+      containers:
+        - image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.5
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -93,3 +105,7 @@ spec:
         allowCredentials: false
         allowHeaders:
           - "*"
+  template:
+    spec:
+      containers:
+        - image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.5
