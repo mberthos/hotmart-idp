@@ -1,4 +1,4 @@
-name: CD Sandbox
+name: CD - Update k8s manifest
 
 on:
   workflow_dispatch:
