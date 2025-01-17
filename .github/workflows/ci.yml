@@ -39,12 +39,12 @@ jobs:
       - name: Build da imagem Docker
         run: |
           cd ${{ github.event.inputs.dockerfile_directory }}
-          docker build -t hotmart-sre:${{ github.event.inputs.dockerfile_directory }}-${{ github.event.inputs.image_version }} .
+          docker build -t hotmart-sre:${{ github.event.inputs.image_version }} .
 
       - name: Marcar imagem para o Amazon ECR
         run: |
-          docker tag hotmart-sre:${{ github.event.inputs.dockerfile_directory }}-${{ github.event.inputs.image_version }} 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:${{ github.event.inputs.dockerfile_directory }}-${{ github.event.inputs.image_version }}
+          docker tag hotmart-sre:${{ github.event.inputs.image_version }} 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:${{ github.event.inputs.image_version }}
 
       - name: Push para o Amazon ECR
         run: |
-          docker push 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:${{ github.event.inputs.dockerfile_directory }}-${{ github.event.inputs.image_version }}
+          docker push 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:${{ github.event.inputs.image_version }}

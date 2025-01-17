@@ -1,0 +1,41 @@
+name: CD Sandbox
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_version:
+        description: 'Versão da imagem'
+        required: true
+
+jobs:
+  update-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout do repositório
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      # Baixar e configurar o yq para manipular YAML
+      - name: Instalar yq
+        run: |
+          wget https://github.com/mikefarah/yq/releases/download/v4.13.5/yq_linux_amd64 -O /usr/local/bin/yq
+          chmod +x /usr/local/bin/yq
+
+      # Atualizar o manifesto com a nova versão da imagem
+      - name: Atualizar versão da imagem no manifesto
+        run: |
+          export IMAGE_VERSION="${{ github.event.inputs.image_version }}"
+          yq e '.spec.template.spec.containers[0].image = "767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:" + env(IMAGE_VERSION)' -i deployment.yaml
+
+      # Verificar as alterações realizadas
+      - name: Verificar alterações no manifesto
+        run: |
+          cat deployment.yaml
+
+      # Commitar e push das alterações no repositório
+      - name: Commit e push das alterações
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'Atualizando imagem para versão ${{ github.event.inputs.image_version }}'
+          branch: main
+          file_pattern: deployment.yaml
