@@ -10,10 +10,10 @@ on:
       dockerfile_directory:
         description: 'Diretório do Dockerfile'
         required: true
-        default: 'project-example'  # Defina um diretório padrão ou deixe em branco
+        default: 'project_example'  # Defina um diretório padrão ou deixe em branco
         type: choice  # Tipo de input como escolha
         options:
-          - project-example
+          - project_example
 
 jobs:
   build-and-push:
