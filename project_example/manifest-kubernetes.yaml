@@ -16,13 +16,12 @@ spec:
     spec:
       containers:
         - name: project-example
-          image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.1
+          image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.2
           ports:
             - containerPort: 80
           envFrom:
             - secretRef:
                 name: project-example
-
 ---
 apiVersion: v1
 kind: Service
@@ -39,6 +38,10 @@ spec:
     - port: 80
       name: http
       targetPort: 80
+  template:
+    spec:
+      containers:
+        - image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.2
 ---
 apiVersion: v1
 data:
@@ -48,3 +51,8 @@ metadata:
   name: project-example
   namespace: carguero-homolog
 type: Opaque
+spec:
+  template:
+    spec:
+      containers:
+        - image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.2
