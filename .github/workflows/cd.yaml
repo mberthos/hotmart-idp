@@ -40,4 +40,4 @@ jobs:
         with:
           commit_message: 'Atualizando imagem para versão ${{ github.event.inputs.image_version }}'
           branch: main
-          file_pattern: manifest-kubernetes.yaml
+          file_pattern: project_example/manifest-kubernetes.yaml
