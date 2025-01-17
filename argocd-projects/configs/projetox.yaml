@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: projetox-dev
+  name: project-example
   namespace: argocd
 spec:
   destination:
@@ -9,8 +9,8 @@ spec:
     namespace: mberthos
   project: default
   source:
-    path: ./projetox/
-    repoURL: git@github.com:mberthos/k8s-manifests.git
+    path: ./project_example/
+    repoURL: git@github.com:mberthos/hotmart-idp.git
     targetRevision: HEAD
   syncPolicy:
     automated:

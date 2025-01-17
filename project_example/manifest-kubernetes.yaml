@@ -27,6 +27,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: project-example
+  namespace: mberthos
   labels:
     logging: loki
     app: project-example
@@ -38,21 +39,57 @@ spec:
     - port: 80
       name: http
       targetPort: 80
-  template:
-    spec:
-      containers:
-        - image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.2
+
 ---
-apiVersion: v1
-data:
-  APPINSIGHTS_INSTRUMENTATIONKEY: NDZkYjU4M
-kind: Secret
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
 metadata:
   name: project-example
-  namespace: carguero-homolog
-type: Opaque
+  namespace: mberthos
 spec:
-  template:
-    spec:
-      containers:
-        - image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.2
+  refreshInterval: 30m # rate SecretManager pulls GCPSM
+  secretStoreRef:
+    name: secretstore-aws # name of the SecretStore (or kind specified)
+    kind: ClusterSecretStore
+  target:
+    name: project-example # name of the k8s Secret to be created
+    creationPolicy: Owner
+  data:
+    - secretKey: project-example  # name of the GCPSM secret key
+      remoteRef:
+        key: project-example
+---
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vs-project_example
+  namespace: mberthos
+spec:
+  hosts:
+    - "app.meudomain.com.br"
+  gateways:
+    - public-gateway
+  http:
+    - route:
+        - destination:
+            host: service-helloworld
+            subset: aguia
+          weight: 80
+        - destination:
+            host: service-helloworld
+            subset: gaviao
+          weight: 20
+      corsPolicy:
+        allowOrigins:
+          - exact: "*"
+        allowMethods:
+          - GET
+          - POST
+          - PATCH
+          - PUT
+          - DELETE
+          - OPTIONS
+        allowCredentials: false
+        allowHeaders:
+          - "*"
