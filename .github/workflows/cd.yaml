@@ -31,7 +31,8 @@ jobs:
       # Verificar as alterações realizadas
       - name: Verificar alterações no manifesto
         run: |
-          cat deployment.yaml
+          cd project_example
+          cat manifest-kubernetes.yaml
 
       # Commitar e push das alterações no repositório
       - name: Commit e push das alterações
@@ -39,4 +40,4 @@ jobs:
         with:
           commit_message: 'Atualizando imagem para versão ${{ github.event.inputs.image_version }}'
           branch: main
-          file_pattern: deployment.yaml
+          file_pattern: manifest-kubernetes.yaml
