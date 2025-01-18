@@ -63,7 +63,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: vs-project-example
-  namespace: default
+  namespace: mberthos
 spec:
   gateways:
     - default/gateway
