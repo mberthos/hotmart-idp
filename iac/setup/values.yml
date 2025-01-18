@@ -1,5 +1,5 @@
 redis-ha:
-  enabled: true
+  enabled: false
 
 controller:
   enableStatefulSet: true
@@ -8,11 +8,11 @@ server:
   replicas: 1
   env:
     - name: ARGOCD_API_SERVER_REPLICAS
-      value: '3'
+      value: '1'
   extraArgs:
     - --insecure
   config:
-    url: "https://argocd.wisemonkeys.co"
+    url: "https://argocd.hotmartsre.dev"
     #dex.config: |
     #  connectors:
     #  - type: github
