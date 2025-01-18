@@ -9,8 +9,8 @@ spec:
     namespace: mberthos
   project: default
   source:
-    path: ./project_example/
-    repoURL: git@github.com:mberthos/hotmart-idp.git
+    path: ./project_example
+    repoURL: https://github.com/mberthos/hotmart-idp.git
     targetRevision: HEAD
   syncPolicy:
     automated:
