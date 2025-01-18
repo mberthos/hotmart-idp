@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: project-example
-          image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.16
+          image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.6
           ports:
             - containerPort: 80
           envFrom:
@@ -40,7 +40,10 @@ spec:
     - port: 80
       name: http
       targetPort: 80
-
+  template:
+    spec:
+      containers:
+        - image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.6
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
@@ -59,7 +62,10 @@ spec:
     - secretKey: project-example # name of the GCPSM secret key
       remoteRef:
         key: project-example
-
+  template:
+    spec:
+      containers:
+        - image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.6
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
@@ -76,3 +82,7 @@ spec:
         - destination:
             host: project-example
       timeout: 30s
+  template:
+    spec:
+      containers:
+        - image: 767828761310.dkr.ecr.us-east-2.amazonaws.com/hotmart-sre:1.0.6
