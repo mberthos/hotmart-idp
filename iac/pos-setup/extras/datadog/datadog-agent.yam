@@ -1,0 +1,41 @@
+apiVersion: datadoghq.com/v2alpha1
+kind: DatadogAgent
+metadata:
+  name: datadog
+spec:
+  global:
+    clusterName: hotmart-course
+    site: datadoghq.com
+    credentials:
+      apiSecret:
+        secretName: datadog-secret
+        keyName: api-key
+  override:
+      nodeAgent:
+        env:
+        - name: DD_LOGS_CONFIG_AUTO_MULTI_LINE_DETECTION
+          value: "true"
+  features:
+        logCollection:
+          enabled: true
+          containerCollectAll: true
+        apm:
+          enabled: true
+        eventCollection:
+          collectKubernetesEvents: true
+        orchestratorExplorer:
+          enabled: true
+        kubeStateMetricsCore:
+          enabled: true
+        admissionController:
+          enabled: true
+          mutateUnlabelled: false
+        externalMetricsServer:
+          enabled: true
+        dogstatsd:
+          unixDomainSocketConfig:
+            enabled: true
+        clusterChecks:
+          enabled: true
+        prometheusScrape:
+          enabled: false
